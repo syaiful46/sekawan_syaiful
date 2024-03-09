@@ -30,9 +30,6 @@ const DetailProduct = ({navigation, route}) => {
   const [userData, setUserData] = useState('');
 
   const [dataDetail, setDataDetail] = useState('');
-  const [search, setSearch] = useState('');
-  const [product, setProduct] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all products');
 
   const {dataId} = route.params;
 
@@ -79,7 +76,7 @@ const DetailProduct = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{width: '15%'}}>
-          <Icon name="arrow-circle-left" size={24} color="white" />
+          <Icon name="arrow-circle-left" size={26} color="white" />
         </TouchableOpacity>
         <Text color={'white'} fontWeight={'bold'} size={20}>
           Product Detail
@@ -93,7 +90,7 @@ const DetailProduct = ({navigation, route}) => {
           height={'90%'}
           width={'100%'}
           source={{
-            uri: dataDetail.image,
+            uri: dataDetail?.image,
           }}
         />
       </View>
@@ -111,54 +108,41 @@ const DetailProduct = ({navigation, route}) => {
             style={{gap: 7, flexDirection: 'row', alignItems: 'flex-start'}}>
             <Icon name="star" size={20} color={'orange'} />
             <Text fontWeight={'bold'} size={16}>
-              {dataDetail.rating?.rate}
+              {dataDetail?.rating?.rate}
             </Text>
             <Text color={'gray'} size={16}>
-              ({dataDetail.rating?.count} reviews)
+              ({dataDetail?.rating?.count} reviews)
             </Text>
           </View>
           <View style={{flexDirection: 'row', gap: 7}}>
             <Icon name={'tags'} size={20} color={'steelblue'} />
             <Text style={{textTransform: 'uppercase'}} fontWeight={'bold'}>
-              {dataDetail.category}
+              {dataDetail?.category}
             </Text>
           </View>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{gap: 10, width: '100%'}}>
             <Text fontWeight={'bold'} size={20}>
-              {dataDetail.title}
+              {dataDetail?.title}
             </Text>
             <Text
               color={'black'}
               fontWeight={'500'}
               size={16}
               style={{textTransform: 'capitalize', textAlign: 'justify'}}>
-              {dataDetail.description}
+              {dataDetail?.description}
             </Text>
           </View>
         </ScrollView>
       </View>
 
-      <View
-        style={{
-          bottom: 0,
-          position: 'absolute',
-          flexDirection: 'row',
-          width: '100%',
-          height: 70,
-          borderWidth: 1,
-          borderColor: 'lightgray',
-          justifyContent: 'space-between',
-          paddingHorizontal: 24,
-          alignItems: 'center',
-          elevation: 3,
-          backgroundColor: 'rgba(255, 255, 255, 4)',
-        }}>
+      <View style={styles.footer}>
         <Text fontWeight={'bold'} size={24}>
-          ${dataDetail.price}
+          ${dataDetail?.price}
         </Text>
         <Icon.Button
+          onPress={() => {}}
           style={{paddingHorizontal: 24, paddingVertical: 10}}
           name={'cart-arrow-down'}
           size={20}
@@ -177,28 +161,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'ghostwhite',
     flex: 1,
   },
-  image: {
-    width: 46,
-    height: 46,
-    backgroundColor: 'rgba(255, 255, 255, 1)',
-    borderRadius: 200,
-  },
-  inputSearch: {
-    width: '100%',
-    backgroundColor: 'ghostwhite',
-    paddingVertical: 5,
+  footer: {
+    bottom: 0,
+    position: 'absolute',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    alignItems: 'center',
-    borderRadius: 10,
+    width: '100%',
+    height: 70,
     borderWidth: 1,
     borderColor: 'lightgray',
-  },
-  textInput: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    width: '95%',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    elevation: 3,
+    backgroundColor: 'rgba(255, 255, 255, 4)',
   },
   backImage: {
     paddingVertical: 10,
@@ -222,10 +197,6 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     elevation: 3,
     width: '100%',
-  },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
   },
   body: {
     paddingHorizontal: 24,

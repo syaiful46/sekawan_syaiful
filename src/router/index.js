@@ -1,7 +1,13 @@
 import React, {useState, useEffect, useContext, useRef} from 'react';
 import {View, Image, Keyboard, Platform} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {SplashScreen, DashboardHome, DetailProduct} from '../pages';
+import {
+  SplashScreen,
+  DashboardHome,
+  DetailProduct,
+  MyProfile,
+  CertificateDetail,
+} from '../pages';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -20,11 +26,11 @@ const TabArr = [
     component: DashboardHome,
   },
   {
-    route: 'Splashscreen',
+    route: 'MyProfile',
     label: 'Profile',
     activeColor: 'steelblue',
     inActiveColor: 'lightblue',
-    component: DetailProduct,
+    component: MyProfile,
   },
 ];
 
@@ -32,7 +38,13 @@ const MainDashboard = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarStyle: {backgroundColor: 'white', elevation: 5, height: 60},
+        tabBarStyle: {
+          backgroundColor: 'white',
+          elevation: 5,
+          height: 60,
+          borderColor: 'lightgray',
+          borderTopWidth: 1,
+        },
         tabBarActiveTintColor: 'steelblue',
         tabBarInactiveTintColor: 'lightblue',
         tabBarHideOnKeyboard: true,
@@ -106,7 +118,9 @@ const Router = () => {
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="DashboardHome" component={DashboardHome} />
       <Stack.Screen name="MainDashboard" component={MainDashboard} />
+      <Stack.Screen name="MyProfile" component={MyProfile} />
       <Stack.Screen name="DetailProduct" component={DetailProduct} />
+      <Stack.Screen name="CertificateDetail" component={CertificateDetail} />
     </Stack.Navigator>
   );
 };

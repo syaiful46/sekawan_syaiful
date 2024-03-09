@@ -19,7 +19,7 @@ const ProductItems = ({data, onPress}) => {
         </Text>
       </View>
       <View style={styles.detail}>
-        <Text>${data.price}</Text>
+        <Text fontWeight={'bold'}>${Math.floor(data.price)}</Text>
         <Icon.Button
           onPress={onPress}
           backgroundColor={'steelblue'}

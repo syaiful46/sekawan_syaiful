@@ -3,6 +3,15 @@ import Button from './Button';
 import HeaderNav from './HeaderNav';
 import FormInput from './FormInput';
 import DropdownInput from './DropdownInput';
+import HeaderProfile from './HeaderProfile';
+import ExperienceCard from './ExperienceCard';
 
-
-export {Text, Button, HeaderNav, FormInput, DropdownInput};
+export {
+  Text,
+  Button,
+  HeaderNav,
+  FormInput,
+  DropdownInput,
+  HeaderProfile,
+  ExperienceCard,
+};

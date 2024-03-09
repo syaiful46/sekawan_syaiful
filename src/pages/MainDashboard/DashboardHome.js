@@ -45,11 +45,9 @@ const DashboardHome = ({navigation, route}) => {
   const focus = useIsFocused();
 
   useEffect(() => {
-    if (focus == true) {
-      getData();
-      console.log('ini get item dataUsers:');
-    }
-  }, [focus]);
+    getData();
+    console.log('ini get item dataUsers:');
+  }, []);
 
   const getData = async () => {
     const apiService = ApiService();
@@ -91,22 +89,23 @@ const DashboardHome = ({navigation, route}) => {
       <StatusBar
         translucent
         backgroundColor={'transparent'}
-        barStyle="dark-content"
+        barStyle="light-content"
       />
       {/* Header */}
       <View style={styles.header}>
         <View style={{width: '55%', marginTop: 25, alignSelf: 'flex-start'}}>
-          <Text fontWeight={'bold'} size={24}>
+          <Text color={'white'} fontWeight={'bold'} size={24}>
             Let's find a new thing for you!
           </Text>
         </View>
         <View style={styles.inputSearch}>
-          <Icon name={'search'} size={20} />
+          <Icon color={'steelblue'} name={'search'} size={20} />
           <TextInput
             style={styles.textInput}
             value={search}
             onChangeText={e => setSearch(e)}
             placeholder="Find Product"
+            placeholderTextColor={'lightgray'}
           />
         </View>
       </View>
@@ -193,6 +192,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     width: '95%',
+    color: 'gray',
   },
   filter: {
     marginVertical: 10,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: 'white',
+    backgroundColor: 'steelblue',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     borderWidth: 1,
