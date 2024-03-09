@@ -11,7 +11,7 @@ const SplashScreen = ({navigation}) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('DashboardHome');
+      navigation.navigate('MainDashboard');
     }, 3500);
 
     return () => clearTimeout(timer);

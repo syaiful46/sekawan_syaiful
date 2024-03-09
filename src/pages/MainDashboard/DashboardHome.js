@@ -22,6 +22,7 @@ import {useSession} from '../../global/utils/Session';
 import {useAsyncStorage} from '../../global/utils/storage';
 import {ApiService, baseUrl} from '../../services/ApiService';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import ProductItems from '../../components/ProductItems';
 
 const DashboardHome = ({navigation, route}) => {
   const {token, getToken, saveToken} = useSession();
@@ -30,6 +31,16 @@ const DashboardHome = ({navigation, route}) => {
 
   const [dataDummy, setDataDummy] = useState([]);
   const [search, setSearch] = useState('');
+  const [product, setProduct] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all products');
+
+  const categoryProduct = [
+    'all products',
+    'electronics',
+    'jewelery',
+    "men's clothing",
+    "women's clothing",
+  ];
 
   const focus = useIsFocused();
 
@@ -38,13 +49,11 @@ const DashboardHome = ({navigation, route}) => {
       getData();
       console.log('ini get item dataUsers:');
     }
-  }, [token, focus]);
-
-  const validateForm = () => {};
+  }, [focus]);
 
   const getData = async () => {
     const apiService = ApiService();
-    const url = baseUrl + '/products?limit=';
+    const url = baseUrl + '/products';
     const pakeToken = false;
     try {
       // Menggunakan fetchMultipartPost dari ApiService
@@ -52,6 +61,7 @@ const DashboardHome = ({navigation, route}) => {
       const data = await response.json();
       if (response.status == 200) {
         console.log('data:', data);
+        setProduct(data);
         setDataDummy(data);
       } else {
         console.log('something wrong');
@@ -62,51 +72,68 @@ const DashboardHome = ({navigation, route}) => {
     }
   };
 
+  const filterCategory = catItem => {
+    setSelectedCategory(catItem);
+    if (catItem === 'all products') {
+      setDataDummy(product);
+    } else {
+      const updatedData = product.filter(item => {
+        return item.category === catItem;
+      });
+      setDataDummy(updatedData);
+    }
+  };
+
   const containerStyle = styles.container;
 
   return (
-    <View style={{backgroundColor: 'ghostwhite', flex: 1}}>
-      {/* Header */}
+    <View style={styles.container}>
       <StatusBar
         translucent
         backgroundColor={'transparent'}
         barStyle="dark-content"
       />
+      {/* Header */}
       <View style={styles.header}>
         <View style={{width: '55%', marginTop: 25, alignSelf: 'flex-start'}}>
           <Text fontWeight={'bold'} size={24}>
             Let's find a new thing for you!
           </Text>
         </View>
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: 'ghostwhite',
-            paddingVertical: 5,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: 15,
-            alignItems: 'center',
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: 'lightgray',
-          }}>
+        <View style={styles.inputSearch}>
           <Icon name={'search'} size={20} />
           <TextInput
-            style={{
-              paddingVertical: 5,
-              paddingHorizontal: 10,
-              width: '95%',
-            }}
+            style={styles.textInput}
             value={search}
             onChangeText={e => setSearch(e)}
             placeholder="Find Product"
           />
         </View>
       </View>
-      <View style={{marginVertical: 7}} />
+      {/* Filter Category */}
+      <View style={styles.filter}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categoryProduct.map((cat, index) => (
+            <TouchableOpacity
+              onPress={() => filterCategory(cat)}
+              key={index}
+              style={{marginRight: 15, alignItems: 'center'}}>
+              <Text
+                size={16}
+                style={{textTransform: 'capitalize'}}
+                fontWeight={cat === selectedCategory ? 'bold' : '500'}
+                color={cat === selectedCategory ? 'steelblue' : 'gray'}>
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
       {/* Scrollview */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{paddingBottom: 5}}
+        showsVerticalScrollIndicator={false}>
         {/* Body */}
         <View style={styles.body}>
           {dataDummy
@@ -120,60 +147,15 @@ const DashboardHome = ({navigation, route}) => {
               }
             })
             .map((data, i) => (
-              <View
+              <ProductItems
+                data={data}
                 key={i}
-                style={{
-                  width: '48%',
-                  borderRadius: 20,
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(255, 255, 255, 1)',
-                  borderColor: 'lightgray',
-                  padding: 10,
-                  gap: 10,
-                  borderWidth: 1,
-                }}>
-                <View style={{width: '100%'}}>
-                  <Image
-                    resizeMode="contain"
-                    source={{uri: data.image}}
-                    style={{
-                      height: 80,
-                      width: '100%',
-                      borderTopLeftRadius: 15,
-                      borderTopRightRadius: 15,
-                    }}
-                  />
-                </View>
-                <View
-                  style={{
-                    height: 60,
-                    width: '95%',
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-start',
-                  }}>
-                  <Text numberOfLines={2} style={{bottom: 0}}>
-                    {data.title}...
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexDirection: 'row',
-                    paddingBottom: 5,
-                  }}>
-                  <Text>${data.price}</Text>
-                  <Icon.Button
-                    backgroundColor={'steelblue'}
-                    name="info-circle"
-                    size={16}
-                    color={'white'}>
-                    Detail
-                  </Icon.Button>
-                </View>
-              </View>
+                onPress={() =>
+                  navigation.navigate('DetailProduct', {
+                    dataId: data.id,
+                  })
+                }
+              />
             ))}
         </View>
       </ScrollView>
@@ -185,33 +167,41 @@ export default DashboardHome;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 25,
-    paddingBottom: 10,
     backgroundColor: 'ghostwhite',
-  },
-  opacityHeadline: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    width: '100%',
-    height: '50%',
-    position: 'absolute',
-    bottom: 0,
-    opacity: 0.7,
-    borderBottomLeftRadius: 15,
-  },
-  rowBetween: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    width: '100%',
-    alignSelf: 'stretch',
+    flex: 1,
+    paddingBottom: 5,
   },
   image: {
     width: 46,
     height: 46,
     backgroundColor: 'rgba(255, 255, 255, 1)',
     borderRadius: 200,
+  },
+  inputSearch: {
+    width: '100%',
+    backgroundColor: 'ghostwhite',
+    paddingVertical: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+  },
+  textInput: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    width: '95%',
+  },
+  filter: {
+    marginVertical: 10,
+    flexDirection: 'row',
+    paddingVertical: 5,
+    paddingHorizontal: 24,
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   header: {
     gap: 15,
@@ -233,7 +223,7 @@ const styles = StyleSheet.create({
   },
   body: {
     paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingVertical: 5,
     justifyContent: 'space-between',
     backgroundColor: 'ghostwhite',
     flexDirection: 'row',
@@ -241,37 +231,5 @@ const styles = StyleSheet.create({
     width: '100%',
     flexWrap: 'wrap',
     gap: 10,
-  },
-  containerDropdown: {
-    backgroundColor: 'transparent',
-    borderColor: 'lightgray',
-    borderWidth: 1,
-    borderRadius: 2,
-    paddingLeft: 5,
-    paddingRight: 3,
-    height: 40,
-    zIndex: 1,
-  },
-  placeholderDropdown: {
-    color: 'rgba(95, 100, 94, 0.5)',
-    fontWeight: '500',
-    fontSize: 14,
-  },
-  itemDropdown: {
-    fontSize: 14,
-    color: '#000',
-    fontWeight: 'bold',
-    fontFamily: 'Nunito-Medium',
-  },
-  selectedTextDropdown: {
-    fontSize: 14,
-    color: '#000',
-    fontWeight: '500',
-  },
-  iconDropdown: {
-    right: 5,
-    width: 28,
-    height: 28,
-    tintColor: 'rgba(95, 100, 94, 0.8)',
   },
 });

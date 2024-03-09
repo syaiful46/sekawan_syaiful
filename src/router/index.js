@@ -1,11 +1,71 @@
 import React, {useState, useEffect, useContext, useRef} from 'react';
 import {View, Image, Keyboard, Platform} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {SplashScreen, DashboardHome} from '../pages';
+import {SplashScreen, DashboardHome, DetailProduct} from '../pages';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 import {Text} from '../components';
+
+const TabArr = [
+  {
+    route: 'DashboardHome',
+    label: 'Product',
+    activeColor: 'steelblue',
+    inActiveColor: 'lightblue',
+    component: DashboardHome,
+  },
+  {
+    route: 'Splashscreen',
+    label: 'Profile',
+    activeColor: 'steelblue',
+    inActiveColor: 'lightblue',
+    component: DetailProduct,
+  },
+];
+
+const MainDashboard = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: {backgroundColor: 'white', elevation: 5, height: 60},
+        tabBarActiveTintColor: 'steelblue',
+        tabBarInactiveTintColor: 'lightblue',
+        tabBarHideOnKeyboard: true,
+      }}
+      tabBarPosition="bottom">
+      {TabArr.map((item, index) => {
+        return (
+          <Tab.Screen
+            key={index}
+            name={item.route}
+            component={item.component}
+            options={{
+              headerShown: false,
+              tabBarShowLabel: true,
+              tabBarLabel: item.label,
+              tabBarLabelStyle: {fontSize: 16},
+              tabBarLabelPosition: 'beside-icon',
+              tabBarIcon: ({color, size}) => {
+                if (item.label === 'Product') {
+                  return <Icon name="table" color={color} size={size} />;
+                } else {
+                  return (
+                    <Icon name="user-astronaut" color={color} size={size} />
+                  );
+                }
+              },
+            }}
+          />
+        );
+      })}
+    </Tab.Navigator>
+  );
+};
 
 const Router = () => {
   // untuk animasi slide kanan
@@ -45,6 +105,8 @@ const Router = () => {
       }}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="DashboardHome" component={DashboardHome} />
+      <Stack.Screen name="MainDashboard" component={MainDashboard} />
+      <Stack.Screen name="DetailProduct" component={DetailProduct} />
     </Stack.Navigator>
   );
 };
