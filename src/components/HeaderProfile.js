@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     height: 75,
     top: 225,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     position: 'absolute',

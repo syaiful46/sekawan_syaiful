@@ -33,6 +33,7 @@ const DashboardHome = ({navigation, route}) => {
   const [search, setSearch] = useState('');
   const [product, setProduct] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all products');
+  const [modalExit, setModalExit] = useState(false);
 
   const categoryProduct = [
     'all products',
@@ -82,7 +83,32 @@ const DashboardHome = ({navigation, route}) => {
     }
   };
 
-  const containerStyle = styles.container;
+  // BackHandler
+  const handleBackButton = () => {
+    setModalExit(true);
+    // Mencegah pengguna untuk kembali ke halaman sebelumnya
+    return true;
+  };
+
+  useEffect(() => {
+    if (focus == true) {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        handleBackButton,
+      );
+      return () => {
+        backHandler.remove();
+      };
+    }
+  }, [focus]);
+
+  const exitButton = async () => {
+    BackHandler.exitApp();
+  };
+
+  const toggleModal = () => {
+    setModalExit(!modalExit);
+  };
 
   return (
     <View style={styles.container}>
@@ -91,6 +117,32 @@ const DashboardHome = ({navigation, route}) => {
         backgroundColor={'transparent'}
         barStyle="light-content"
       />
+      <Modal animationType="slide" transparent={true} visible={modalExit}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View style={styles.centeredView}>
+            <Text style={styles.modalTitle}>Keluar Aplikasi</Text>
+            <View style={{width: '100%', marginBottom: 10}}>
+              <Text style={styles.modalText}>
+                Apakah Anda yakin untuk keluar dari aplikasi?
+              </Text>
+            </View>
+            <View style={{width: '100%', alignItems: 'center'}}>
+              <TouchableOpacity onPress={exitButton} style={styles.modalButton}>
+                <Text style={styles.textStylePutih}>Keluar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={toggleModal}>
+                <Text style={[styles.textStyle]}>Batalkan</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      
       {/* Header */}
       <View style={styles.header}>
         <View style={{width: '55%', marginTop: 25, alignSelf: 'flex-start'}}>
@@ -231,5 +283,80 @@ const styles = StyleSheet.create({
     width: '100%',
     flexWrap: 'wrap',
     gap: 10,
+  },
+  centeredView: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 23,
+    paddingTop: 29,
+    paddingHorizontal: 25,
+    width: '80%',
+    height: '40%',
+    borderRadius: 25,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    alignSelf: 'center',
+    elevation: 3,
+    shadowColor: 'black', // Warna bayangan
+    shadowOffset: {
+      width: 0,
+      height: 3, // Besarnya pergeseran bayangan
+    },
+    shadowOpacity: 0.3, // Opasitas bayangan
+    shadowRadius: 3,
+  },
+  modalTitle: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '800',
+    marginBottom: 16,
+    color: 'steelblue',
+  },
+  modalButton: {
+    width: '89%',
+    height: 53,
+    borderRadius: 16,
+    backgroundColor: 'steelblue',
+    borderColor: 'steelblue',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
+  button: {
+    borderRadius: 5,
+    padding: 15,
+    elevation: 2,
+    width: 290,
+  },
+  buttonOpen: {
+    backgroundColor: '#FA8585',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  buttonExit: {
+    width: '15%',
+    height: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: '600',
+    opacity: 0.7,
+    textAlign: 'center',
+    lineHeight: 22.4,
+  },
+  textStylePutih: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
+    lineHeight: 22.4,
+    opacity: 0.8,
+    color: 'white',
   },
 });
